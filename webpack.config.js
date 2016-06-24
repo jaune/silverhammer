@@ -1,25 +1,38 @@
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+var walk = require('fs-walk'),
+    fs = require('fs'),
+    path = require('path');
+
+
+var entries = {};
+var entriesPath = path.join(__dirname, 'pages');
+
+walk.walkSync(entriesPath, function(basedir, filename, stat) {
+  var absPath = path.join(basedir, filename);
+
+  if (stat.isFile() && (path.extname(filename) === '.jsx')) {
+    var parts = path.relative(entriesPath, absPath).slice(0, -4).split(path.sep);
+
+    entries[parts.join('/')] = './lib/page-loader.js!' + absPath;
+  }
+});
+
+
 module.exports = {
-  entry: {
-    'Home': './lib/page-loader.js!' + __dirname + '/page/Home.jsx'
-  },
+  entry: entries,
   devtool: 'source-map',
   output: {
     path: __dirname + '/web',
-    filename: '[name].bundle.js'
+    filename: '[name].page.js'
   },
   module: {
     loaders: [
       {
         test: /.jsx$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
-        query: {
-          presets: ['es2015', 'stage-1', 'react'],
-          // plugins: ['transform-decorators-legacy']
-        }
+        exclude: /node_modules/
       },
       {
         test: /\.css$/,
@@ -32,7 +45,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('[name].bundle.css'),
+    new ExtractTextPlugin('[name].page.css'),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
