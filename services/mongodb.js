@@ -2,6 +2,8 @@ const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 const ObjectID = mongodb.ObjectID;
 
+var logger = require('../logger.js');
+
 module.exports = function (app) {
 
   return function (next) {
@@ -9,7 +11,7 @@ module.exports = function (app) {
       if (error) {
         return next(error);
       }
-      console.log('MongoClient ::: Connected correctly to server');
+      logger.info('MongoClient ::: Connected correctly to server');
 
       app.services.mongodb = db;
       next();

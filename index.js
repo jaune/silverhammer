@@ -1,6 +1,8 @@
 const express = require('express');
 const async = require('async');
 
+var logger = require('./logger.js');
+
 require('node-jsx').install({extension: '.jsx'});
 require('./lib/ignore-style.js').install();
 
@@ -13,8 +15,8 @@ app.set('port', (process.env.PORT || 5000));
 app.services = {};
 
 async.parallel([
-  require('./service/redis.js')(app),
-  require('./service/mongodb.js')(app)
+  require('./services/redis.js')(app),
+  require('./services/mongodb.js')(app)
 ], function (error) {
   if (error) {
     throw error;
@@ -30,7 +32,7 @@ async.parallel([
   app.use(require('cookie-parser')());
   app.use(require('body-parser').urlencoded({ extended: true }));
   app.use(session({
-    secret: 'keyboard cat',
+    secret: process.env.SESSION_SECRET || 'session/secret',
     resave: true,
     saveUninitialized: true,
     store: new RedisStore({
@@ -42,22 +44,42 @@ async.parallel([
   app.use(passport.initialize());
   app.use(passport.session());
 
-  const renderPage = require('./lib/page-renderer.js');
-  const Redux = require('redux');
+  app.use(require('./routes/home.js'));
+  app.use(require('./routes/authorize.js'));
+  app.use(require('./routes/authorization.js'));
+  app.use(require('./routes/account.js'));
+  app.use(require('./routes/session.js'));
 
-  app.get('/', function (req, res, next) {
-    var uuid = req.params.uuid;
+  // End
+  app.use(function(error, req, res, next) {
+    logger.error(error, error.stack);
+    res.status(500);
 
-    const store = Redux.createStore(require('./reducers'));
+    res.format({
+      'text/plain': function(){
+        res.send('500 - Internal Server Error.');
+      },
 
-    res.type('html');
-    res.send(renderPage(require('./pages/Home.jsx'), store));
+      'text/html': function(){
+        res.send([
+          '<!DOCTYPE html>',
+          '<html><head><title>500 - Internal Server Error</title></head><body><h1>500 - Internal Server Error</h1></body></html>'
+        ].join('\n'));
+      },
+
+      'application/json': function(){
+        res.json({ error: '500 - Internal Server Error' });
+      },
+
+      'default': function() {
+        res.send('500 - Internal Server Error.');
+      }
+    });
+    return next();
   });
 
-  app.use(require('./route/authorize'));
-
   app.listen(app.get('port'), function() {
-    console.log('Node app is running on port', app.get('port'));
+    logger.info('Node app is running on port', app.get('port'));
   });
 
 });

@@ -30,9 +30,12 @@
     "react-dom": "^15.1.0",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.1.0",
     "sass-loader": "^3.2.1",
     "style-loader": "^0.13.1",
-    "uuid": "^2.0.2"
+    "uuid": "^2.0.2",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.9.1",
@@ -41,8 +44,12 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-react-hmre": "^1.1.1",
     "babel-preset-stage-1": "^6.5.0",
+    "eslint-plugin-react": "^5.2.2",
     "extract-text-webpack-plugin": "^1.0.1",
     "fs-walk": "0.0.1",
+    "grunt": "^1.0.1",
+    "grunt-eslint": "^18.1.0",
+    "load-grunt-tasks": "^3.5.0",
     "loader-utils": "^0.2.15",
     "walk": "^2.3.9",
     "webpack": "^1.13.1",

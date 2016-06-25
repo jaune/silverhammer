@@ -1,23 +1,25 @@
 var Redis = require('ioredis');
 
+var logger = require('../logger.js');
+
 module.exports = function (app) {
 
   return function (next) {
     var redis = new Redis({ showFriendlyErrorStack: true });
 
     redis.on('connect', function () {
-      console.log('redis ::: connect');
+      logger.info('redis ::: connect');
 
       app.services.redis = redis;
       next();
     });
 
     redis.on('authError', function () {
-      console.log('redis ::: authError');
+      logger.error('redis ::: authError');
     });
 
     redis.on('error', function () {
-      console.log('redis ::: error');
+      logger.error('redis ::: error');
     });
   };
 

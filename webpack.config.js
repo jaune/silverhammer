@@ -1,9 +1,10 @@
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 
-var walk = require('fs-walk'),
-    fs = require('fs'),
-    path = require('path');
+const walk = require('fs-walk'),
+      fs = require('fs'),
+      path = require('path');
 
 
 var entries = {};
@@ -25,7 +26,7 @@ module.exports = {
   devtool: 'source-map',
   output: {
     path: __dirname + '/web',
-    filename: '[name].page.js'
+    filename: '[name].chunk.js'
   },
   module: {
     loaders: [
@@ -45,8 +46,10 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('[name].page.css'),
+    new ExtractTextPlugin('[name].chunk.css'),
+    new CommonsChunkPlugin('commons.chunk.js'),
     new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.DedupePlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
