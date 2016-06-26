@@ -5,4 +5,5 @@ module.exports = Redux.combineReducers({
   i18n: require('./i18n.js'),
   session: require('./session.js'),
   authorize: require('./authorize.js'),
+  account: require('./account.js')
 });

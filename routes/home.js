@@ -29,13 +29,10 @@ router.get('/', function (req, res, next) {
     }
 
     if (account) {
-      store.dispatch({
-        type: 'SESSION_ACCOUNT',
-        account: {
-          uuid: account.uuid,
-          label: account.displayName
-        }
-      });
+      store.dispatch(require('../actions/session.js').setAccount({
+        uuid: account.uuid,
+        label: account.displayName
+      }));
     };
 
     res.send(renderPage(HomePage, store));

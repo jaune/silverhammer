@@ -125,10 +125,12 @@ router.get('/account/@me.html', function (req, res, next) {
 
     const store = Redux.createStore(require('../reducers'));
 
-    store.dispatch({
-      type: 'ACCOUNT_RECEIVE',
-      account: account
-    });
+    store.dispatch(require('../actions/session.js').setAccount({
+      uuid: account.uuid,
+      label: account.displayName
+    }));
+
+    store.dispatch(require('../actions/account.js').setAccountMe(account));
 
     res.send(renderPage(require('../pages/account/Me.jsx'), store));
   });
@@ -149,10 +151,7 @@ router.get('/account/:account_uuid.html', function (req, res, next) {
 
     const store = Redux.createStore(require('../reducers'));
 
-    store.dispatch({
-      type: 'ACCOUNT_RECEIVE',
-      account: account
-    });
+    store.dispatch(require('../actions/account.js').setAccountOther(account));
 
     res.send(renderPage(require('../pages/account/Other.jsx'), store));
   });

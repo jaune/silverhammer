@@ -2,7 +2,16 @@ const React = require('react');
 const ReactRedux = require('react-redux');
 
 function mapStateToProps (state, ownProps) {
-  return {};
+  var accountLabel;
+
+  try {
+    accountLabel = state.session.account.label
+  } catch (error) {
+  }
+
+  return {
+    accountLabel: accountLabel
+  };
 }
 
 function mapDispatchToProps (dispatch, ownProps) {
@@ -14,9 +23,24 @@ function mapDispatchToProps (dispatch, ownProps) {
 }
 
 const LogOutButton = React.createClass({
+  propTypes: {
+    accountLabel: React.PropTypes.string,
+    onClick: React.PropTypes.func.isRequired
+  },
   render: function() {
+    var content;
+
+    if (this.props.accountLabel) {
+      return (
+        <div>
+          <a href="/account/@me.html">{this.props.accountLabel}</a>
+          <button onClick={this.props.onClick}>Log Out !</button>
+        </div>
+      );
+    }
+
     return (
-      <button onClick={this.props.onClick}>Log Out !</button>
+      <div><a href="/authorize.html">Connect !</a></div>
     );
   }
 });

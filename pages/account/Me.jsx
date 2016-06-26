@@ -1,19 +1,16 @@
 const React = require('react');
 
+const Page = require('../../components/Page.jsx');
+
+const PageAccountMeContent = require('../../containers/PageAccountMeContent.jsx');
+
 module.exports = React.createClass({
   displayName: 'account/Me',
   render: function() {
     return (
-      <div>
-        <header role="banner">account/Me header</header>
-        <nav role="navigation">account/Me navigation</nav>
-        <main role="main">
-          <pre>
-            {JSON.stringify(this.props.account, null, 2)}
-          </pre>
-        </main>
-        <footer role="contentinfo">authorization_CreateAccount footer</footer>
-      </div>
+      <Page>
+        <PageAccountMeContent />
+      </Page>
     );
   }
 });

@@ -84,7 +84,7 @@ function authorizeCallback(req, res, next) {
               app.services.redis.delete(authorization_uuid); // async
               return next(error);
             }
-            res.redirect('/account/' + account.uuid + '.html');
+            res.redirect('/account/@me.html');
           });
           return;
         } else {

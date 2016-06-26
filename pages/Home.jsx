@@ -1,19 +1,14 @@
 const React = require('react');
 
-const LogOutButton = require('../containers/LogOutButton.jsx');
+const Page = require('../components/Page.jsx');
 
-const Home = React.createClass({
+var Home = React.createClass({
   render: function() {
     return (
-      <div className="page--home">
-        <header role="banner">
-          <LogOutButton />
-        </header>
-        <nav role="navigation">Home content</nav>
-        <main role="main">
-        </main>
-        <footer role="contentinfo">Home footer</footer>
-      </div>
+      <Page>
+        <div>content 1</div>
+        <div>content 2</div>
+      </Page>
     );
   }
 });

@@ -1,4 +1,4 @@
-var initialState = {
+const initialState = {
   passports: [],
   authorization: null,
   account: null
@@ -6,7 +6,7 @@ var initialState = {
 
 module.exports = function (state, action) {
   if (typeof state === 'undefined') {
-    return initialState;
+    return Object.assign({}, initialState); // Clone initialState !!!
   }
 
   switch (action.type) {
