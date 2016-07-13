@@ -14,20 +14,15 @@ require('./authorize/discord.js')(router, authorizeCallback);
 
 var passport = require('passport');
 
-router.get('/authorize.html', function (req, res) {
-  const store = Redux.createStore(require('../reducers'));
+const i = require('../lib/initiate-state.js');
 
-  store.dispatch({
-    type: 'PASSPORTS_RECEIVE',
-    passports: ['steam', 'twitchtv', 'bnet', 'discord'].map(function (key) {
-      return {
-        url: process.env.PUBLIC_BASE_URL + '/authorize/' + key
-      };
-    })
-  });
+
+
+router.get('/authorize.html', [i.initiateState, i.initiateStateRouter, i.initiateStateSessionAccountFromSession, i.initiateStateConstantsPassports], function (req, res) {
+  const store = Redux.createStore(require('../reducers'), req.initialState);
 
   res.type('html');
-  res.send(renderPage(require('../pages/Authorize.jsx'), store));
+  res.send(renderPage(require('../pages/Authorize.jsx'), store, req.app.services.router));
 });
 
 

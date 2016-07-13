@@ -3,7 +3,7 @@ const async = require('async');
 
 var logger = require('./logger.js');
 
-require('node-jsx').install({extension: '.jsx'});
+require('babel-register')({extensions: ['.jsx']});
 require('./lib/ignore-style.js').install();
 
 require('dotenv').config({ silent: true});
@@ -21,6 +21,35 @@ async.parallel([
   if (error) {
     throw error;
   }
+
+  const createRouter = require('./lib/router/createRouter.js');
+
+  app.services.router = createRouter({
+    base: process.env.PUBLIC_BASE_URL,
+    routes: [
+      {
+        pattern: '/',
+        virtual: true
+      },
+      {
+        pattern: '/authorize.html',
+        virtual: true
+      },
+      {
+        pattern: '/authorization/:authorization_uuid/form/create-account.html',
+        virtual: true
+      },
+      {
+        pattern: '/account/@me.html',
+        virtual: true
+      },
+
+      {
+        pattern: '/lobby/:lobby_uuid.html',
+        virtual: true
+      }
+    ]
+  });
 
   var passport = require('passport');
 
@@ -49,10 +78,11 @@ async.parallel([
   app.use(require('./routes/authorization.js'));
   app.use(require('./routes/account.js'));
   app.use(require('./routes/session.js'));
+  app.use(require('./routes/lobby.js'));
 
   // End
   app.use(function(error, req, res, next) {
-    logger.error(error, error.stack);
+    logger.error(error);
     res.status(500);
 
     res.format({
@@ -63,12 +93,12 @@ async.parallel([
       'text/html': function(){
         res.send([
           '<!DOCTYPE html>',
-          '<html><head><title>500 - Internal Server Error</title></head><body><h1>500 - Internal Server Error</h1></body></html>'
+          '<html><head><title>500 - Internal Server Error</title></head><body><h1>500 - Internal Server Error</h1><h2>' + error + '</h2><pre>' + error.stack + '</pre></body></html>'
         ].join('\n'));
       },
 
       'application/json': function(){
-        res.json({ error: '500 - Internal Server Error' });
+        res.json({ error: '500 - Internal Server Error', message: error });
       },
 
       'default': function() {

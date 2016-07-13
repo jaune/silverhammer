@@ -8,14 +8,5 @@ module.exports = function (state, action) {
     return Object.assign({}, initialState); // Clone initialState !!!
   }
 
-  switch (action.type) {
-    case 'ACCOUNT__SET_ACCOUNT_ME':
-      state.accountMe = action.account;
-    break;
-    case 'ACCOUNT__SET_ACCOUNT_OTHER':
-      state.accountOther = action.account;
-    break;
-  }
-
   return state;
 }

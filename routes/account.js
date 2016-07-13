@@ -14,7 +14,12 @@ router.post('/account/', function (req, res, next) {
   var authorization_key = 'authorization/' + authorization_uuid;
 
   req.app.services.redis.get(authorization_key, function (error, raw) {
+    if (error) {
+      return next(error);
+    }
+
     var authorization;
+    var data;
 
     try {
       data = JSON.parse(raw);
@@ -99,63 +104,23 @@ router.get('/account/@me', function (req, res, next) {
   });
 });
 
+const i = require('../lib/initiate-state.js');
 
-router.get('/account/@me.html', function (req, res, next) {
+router.get('/account/@me.html', [i.initiateState, i.initiateStateRouter, i.initiateStateSessionAccountFromSession, i.initiateStateAccountFromSession], function (req, res, next) {
   res.type('html');
 
-  var account_uuid;
+  var store = Redux.createStore(require('../reducers'), req.initialState);
 
-  try {
-    account_uuid = req.session.user.account_uuid;
-  } catch (error) {
-  }
-
-  if (!account_uuid) {
-    return res.sendStatus(401); // 401 Unauthorized
-  }
-
-  req.app.services.mongodb.collection('accounts').findOne({ uuid: account_uuid }, function (error, account) {
-    if (error) {
-      return next(error);
-    }
-
-    if (!account) {
-      return res.sendStatus(404); // 404 Not Found
-    }
-
-    const store = Redux.createStore(require('../reducers'));
-
-    store.dispatch(require('../actions/session.js').setAccount({
-      uuid: account.uuid,
-      label: account.displayName
-    }));
-
-    store.dispatch(require('../actions/account.js').setAccountMe(account));
-
-    res.send(renderPage(require('../pages/account/Me.jsx'), store));
-  });
+  res.send(renderPage(require('../pages/account/Me.jsx'), store, req.app.services.router));
 });
 
 
-router.get('/account/:account_uuid.html', function (req, res, next) {
+router.get('/account/:account_uuid.html', [i.initiateState, i.initiateStateRouter, i.initiateStateSessionAccountFromSession, i.initiateStateAccountFromParams], function (req, res, next) {
   res.type('html');
 
-  req.app.services.mongodb.collection('accounts').findOne({ uuid: req.params.account_uuid }, function (error, account) {
-    if (error) {
-      return next(error);
-    }
+  var store = Redux.createStore(require('../reducers'), req.initialState);
 
-    if (!account) {
-      return res.sendStatus(404); // 404 Not Found
-    }
-
-    const store = Redux.createStore(require('../reducers'));
-
-    store.dispatch(require('../actions/account.js').setAccountOther(account));
-
-    res.send(renderPage(require('../pages/account/Other.jsx'), store));
-  });
-
+  res.send(renderPage(require('../pages/account/Other.jsx'), store, req.app.services.router));
 });
 
 module.exports = router;

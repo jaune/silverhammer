@@ -4,20 +4,19 @@ const initialState = {
 
 module.exports = function (state, action) {
   if (typeof state === 'undefined') {
-    return Object.assign({}, initialState); // Clone initialState !!!
+    return Object.assign({}, initialState);
   }
 
   switch (action.type) {
-    case 'SESSION__SET_ACCOUNT':
-      state.account = action.account; // TODO
-    break;
-    case 'SESSION__LOGOUT':
+    case 'session/DELETE':
       // TODO
     break;
-    case 'SESSION__LOGOUT--SUCCESS':
-      state.account = null; // TODO
+    case 'session/DELETE--SUCCESS':
+      return Object.assign({}, state, {
+        account: null
+      });
     break;
-    case 'SESSION__LOGOUT--FAILURE':
+    case 'session/DELETE--FAILURE':
       // TODO
     break;
   }

@@ -8,7 +8,7 @@ const Redux = require('redux');
 var router = express.Router();
 
 // Retrieve authorization from authorization_uuid
-router.use('/authorization/:authorization_uuid', function (req, res, next) {
+function loadAuthorizationFromParams(req, res, next) {
   var authorization_key = 'authorization/' + req.params.authorization_uuid;
 
   req.app.services.redis.get(authorization_key, function (error, value) {
@@ -35,9 +35,9 @@ router.use('/authorization/:authorization_uuid', function (req, res, next) {
 
     return next();
   });
-});
+};
 
-router.get('/authorization/:authorization_uuid/form/add-authorization-to-account.html', function (req, res) {
+router.get('/authorization/:authorization_uuid/form/add-authorization-to-account.html', loadAuthorizationFromParams, function (req, res) {
   const store = Redux.createStore(require('../reducers'));
 
   store.dispatch({
@@ -49,20 +49,19 @@ router.get('/authorization/:authorization_uuid/form/add-authorization-to-account
   res.send(renderPage(require('../pages/authorization/AddToAccount.jsx'), store));
 });
 
-router.get('/authorization/:authorization_uuid/form/create-account.html', function (req, res) {
-  const store = Redux.createStore(require('../reducers'));
+const thunk = require('redux-thunk').default;
 
-  store.dispatch({
-    type: 'AUTHORIZATION_RECEIVE',
-    authorization: req.authorization
-  });
+const i = require('../lib/initiate-state.js');
 
+router.get('/authorization/:authorization_uuid/form/create-account.html', [i.initiateState, i.initiateStateRouter, i.initiateStateSessionAccountFromSession, i.initiateStateAuthorizationFromParams], function (req, res, next) {
   res.type('html');
-  res.send(renderPage(require('../pages/authorization/CreateAccount.jsx'), store));
+
+  var store = Redux.createStore(require('../reducers'), req.initialState);
+
+  res.send(renderPage(require('../pages/authorization/CreateAccount.jsx'), store, req.app.services.router));
 });
 
-router.get('/authorization/:authorization_uuid/message/:message_key.html', function (req, res) {
-
+router.get('/authorization/:authorization_uuid/message/:message_key.html', loadAuthorizationFromParams, function (req, res) {
   res.send(req.params.message_key + '.html');
 });
 

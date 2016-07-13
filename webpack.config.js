@@ -41,7 +41,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style', 'css?sourceMap', 'sass?sourceMap')
+        loader: ExtractTextPlugin.extract('style', 'css?sourceMap!sass?sourceMap')
       }
     ]
   },
@@ -52,8 +52,13 @@ module.exports = {
     new webpack.optimize.DedupePlugin(),
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('production')
+        // 'NODE_ENV': JSON.stringify('production')
       }
     })
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: {
+    //     warnings: false
+    //   }
+    // })
   ]
 };

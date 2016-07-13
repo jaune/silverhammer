@@ -2,15 +2,18 @@ const React = require('react');
 
 const Page = require('../components/Page.jsx');
 
+const Lobby = require('../containers/lobby/Lobby.jsx');
+
 var Home = React.createClass({
   render: function() {
     return (
       <Page>
-        <div>content 1</div>
-        <div>content 2</div>
+        <Lobby />
       </Page>
     );
   }
 });
+
+Home.STYLE = true;
 
 module.exports = Home;

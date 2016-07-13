@@ -1,36 +1,38 @@
 // TODO SESSION__LOGOUT--FAILURE
 
-function logOut() {
-  return function (dispatch) {
+function requestSessionDelete() {
+  return new Promise(function (resolve, reject) {
     var client = new XMLHttpRequest();
-
-    dispatch({
-      type: 'SESSION__LOGOUT'
-    });
 
     client.addEventListener('readystatechange', function (event) {
       if ((client.readyState === XMLHttpRequest.DONE) && (client.status === 200)) {
-        dispatch({
-          type: 'SESSION__LOGOUT--SUCCESS'
-        });
+        resolve();
       }
     });
 
     client.open('DELETE', '/session/@me');
     client.send();
-
-    return null;
-  };
+  });
 }
 
-function setAccount(account) {
-  return {
-    type: 'SESSION__SET_ACCOUNT',
-    account: account
+function logOut() {
+  return function (dispatch) {
+    dispatch({
+      type: 'session/DELETE'
+    });
+
+    return requestSessionDelete().then(function () {
+      dispatch({
+        type: 'session/DELETE--SUCCESS'
+      });
+    }, function (error) {
+      dispatch({
+        type: 'session/DELETE--FAILURE'
+      });
+    });
   };
 }
 
 module.exports = {
-  logOut: logOut,
-  setAccount: setAccount
+  logOut: logOut
 };

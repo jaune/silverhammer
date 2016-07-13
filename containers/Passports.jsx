@@ -3,7 +3,9 @@ const ReactRedux = require('react-redux');
 
 function mapStateToProps (state, ownProps) {
   return {
-    passports: state.authorize.passports
+    passports: Object.keys(state.constants.passports).map(function (key) {
+      return state.constants.passports[key];
+    })
   }
 }
 

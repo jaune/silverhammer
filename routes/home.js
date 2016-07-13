@@ -6,38 +6,14 @@ var router = express.Router();
 const renderPage = require('../lib/page-renderer.js');
 const Redux = require('redux');
 
-router.get('/', function (req, res, next) {
+const i = require('../lib/initiate-state.js');
+
+router.get('/', [i.initiateState, i.initiateStateRouter, i.initiateStateSessionAccountFromSession], function (req, res, next) {
   res.type('html');
 
-  var store = Redux.createStore(require('../reducers'));
+  var store = Redux.createStore(require('../reducers'), req.initialState);
 
-  var account_uuid;
-
-  try {
-    account_uuid = req.session.user.account_uuid;
-  } catch (error) {
-  }
-
-  if (!account_uuid) {
-    res.send(renderPage(HomePage, store));
-    return;
-  }
-
-  req.app.services.mongodb.collection('accounts').findOne({ uuid: account_uuid }, function (error, account) {
-    if (error) {
-      return next(error);
-    }
-
-    if (account) {
-      store.dispatch(require('../actions/session.js').setAccount({
-        uuid: account.uuid,
-        label: account.displayName
-      }));
-    };
-
-    res.send(renderPage(HomePage, store));
-  });
-
+  res.send(renderPage(HomePage, store, req.app.services.router));
 });
 
 module.exports = router;

@@ -1,16 +1,21 @@
 const React = require('react');
 const ReactRedux = require('react-redux');
 
+const CreateLobbyButton = require('./CreateLobbyButton.jsx');
+
+var Link = require('../lib/router/components/Link.jsx');
+
 function mapStateToProps (state, ownProps) {
-  var accountLabel;
+  var displayName;
 
   try {
-    accountLabel = state.session.account.label
+    displayName = state.session.account.displayName
   } catch (error) {
   }
 
   return {
-    accountLabel: accountLabel
+    displayName: displayName,
+    lobbyUUID: state.lobby.uuid || null
   };
 }
 
@@ -24,23 +29,35 @@ function mapDispatchToProps (dispatch, ownProps) {
 
 const LogOutButton = React.createClass({
   propTypes: {
-    accountLabel: React.PropTypes.string,
+    displayName: React.PropTypes.string,
+    lobbyUUID: React.PropTypes.string,
     onClick: React.PropTypes.func.isRequired
   },
   render: function() {
     var content;
 
-    if (this.props.accountLabel) {
+    var lobby;
+
+    if (this.props.lobbyUUID) {
+      lobby = <div><Link path={ '/lobby/' + this.props.lobbyUUID + '.html' }>Go To Lobby [{this.props.lobbyUUID}]</Link></div>
+    } else {
+      lobby = <div><CreateLobbyButton /></div>
+    }
+
+    if (this.props.displayName) {
       return (
         <div>
-          <a href="/account/@me.html">{this.props.accountLabel}</a>
-          <button onClick={this.props.onClick}>Log Out !</button>
+          <div>
+            <a href="/account/@me.html">{this.props.displayName}</a>
+            <button onClick={this.props.onClick}>Log Out !</button>
+          </div>
+          {lobby}
         </div>
       );
     }
 
     return (
-      <div><a href="/authorize.html">Connect !</a></div>
+      <div><Link path="/authorize.html">Connect !</Link></div>
     );
   }
 });
