@@ -1,0 +1,55 @@
+%flexbox {
+  display: flex;
+  flex: 1;
+  align-self: auto;
+}
+
+.lobby-Lobby {
+}
+
+.lobby-Lobby__main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: stretch;
+}
+
+.lobby-Lobby__prompt {
+  textarea {
+    resize: none;
+    width: calc(100% - 4px);
+    padding: 2px;
+    margin: 0;
+    border: 0;
+  }
+}
+
+.lobby-Lobby__messages {
+  @extend %flexbox;
+
+  background-color: #f0f;
+}
+
+.lobby-Lobby__message {
+  background-color: #f0f;
+}
+
+.lobby-Lobby__message--me {
+  @extend .lobby-Lobby__message;
+}
+
+.lobby-Lobby__players {
+  @extend %flexbox;
+
+  background-color: #f00;
+}
+
+.lobby-Lobby__player {
+  background-color: #f0f;
+}
+
+.lobby-Lobby__player--me {
+  @extend .lobby-Lobby__player;
+}
