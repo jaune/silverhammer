@@ -3,7 +3,7 @@
 const express = require('express');
 const uuidv4 = require('uuid').v4;
 
-const renderPage = require('../lib/page-renderer.js');
+const renderPage = require('../lib/entry-renderer.js');
 const renderRedirectPage = require('../lib/redirect-page-renderer.js');
 const Redux = require('redux');
 
@@ -111,7 +111,7 @@ router.get('/account/@me.html', [i.initiateState, i.initiateStateRouter, i.initi
 
   var store = Redux.createStore(require('../reducers'), req.initialState);
 
-  res.send(renderPage(require('../pages/account/Me.jsx'), store, req.app.services.router));
+  res.send(renderPage(require('../components/entry/Default.jsx'), store, req.app.services.router));
 });
 
 
@@ -120,7 +120,7 @@ router.get('/account/:account_uuid.html', [i.initiateState, i.initiateStateRoute
 
   var store = Redux.createStore(require('../reducers'), req.initialState);
 
-  res.send(renderPage(require('../pages/account/Other.jsx'), store, req.app.services.router));
+  res.send(renderPage(require('../components/entry/Default.jsx'), store, req.app.services.router));
 });
 
 module.exports = router;

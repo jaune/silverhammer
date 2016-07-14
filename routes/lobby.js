@@ -2,11 +2,13 @@ const express = require('express');
 const uuidv4 = require('uuid').v4;
 var logger = require('../logger.js');
 
-const renderPage = require('../lib/page-renderer.js');
+const renderPage = require('../lib/entry-renderer.js');
 const renderRedirectPage = require('../lib/redirect-page-renderer.js');
 const Redux = require('redux');
 
 var router = express.Router();
+
+const i = require('../lib/initiate-state.js');
 
 
 function loadAccountFromSession(req, res, next) {
@@ -107,22 +109,11 @@ router.post('/lobby/', function (req, res, next) {
 });
 
 // lobby page
-router.get('/lobby/:lobby_uuid.html', loadLobbyFromParams, function (req, res, next) {
+router.get('/lobby/:lobby_uuid.html', [i.initiateState, i.initiateStateRouter, i.initiateStateSessionAccountFromSession, i.initiateStateCollectionLobbyFromParams], function (req, res, next) {
+  var store = Redux.createStore(require('../reducers'), req.initialState);
+
   res.type('html');
-
-  var initialState = {
-    lobby: req.lobby
-  };
-
-  const store = Redux.createStore(require('../reducers'), initialState);
-
-  /*
-  store.dispatch(require('../actions/lobby.js').receiveLobby(req.lobby)).then(function () {
-    res.send(renderPage(require('../pages/Lobby.jsx'), store));
-  });
-  */
-
-  res.send(renderPage(require('../pages/Lobby.jsx'), store));
+  res.send(renderPage(require('../components/entry/Default.jsx'), store, req.app.services.router));
 });
 
 // get lobby state

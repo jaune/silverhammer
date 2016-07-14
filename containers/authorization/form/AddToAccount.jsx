@@ -14,15 +14,15 @@ function mapDispatchToProps (dispatch, ownProps) {
 }
 
 const CreateLobbyButton = React.createClass({
-  displayName: 'authorization/CreateAccountForm',
+  displayName: 'authorization/form/AddToAccount',
   propTypes: {},
   render: function() {
     var content;
 
     return (
-      <form method="POST" action="/account/">
+      <form method="POST" action="/account/@me/authorization/">
         <input type="hidden" name="authorization_uuid" value={this.props.authorization.uuid}></input>
-        <button type="submit">Create an Account !</button>
+        <button type="submit">Add to an Account !</button>
       </form>
     );
   }

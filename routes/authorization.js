@@ -1,6 +1,6 @@
 const express = require('express');
 
-const renderPage = require('../lib/page-renderer.js');
+const renderPage = require('../lib/entry-renderer.js');
 const renderRedirectPage = require('../lib/redirect-page-renderer.js');
 const Redux = require('redux');
 
@@ -40,13 +40,8 @@ function loadAuthorizationFromParams(req, res, next) {
 router.get('/authorization/:authorization_uuid/form/add-authorization-to-account.html', loadAuthorizationFromParams, function (req, res) {
   const store = Redux.createStore(require('../reducers'));
 
-  store.dispatch({
-    type: 'AUTHORIZATION_RECEIVE',
-    authorization: req.authorization
-  });
-
   res.type('html');
-  res.send(renderPage(require('../pages/authorization/AddToAccount.jsx'), store));
+  res.send(renderPage(require('../components/entry/Default.jsx'), store, req.app.services.router));
 });
 
 const thunk = require('redux-thunk').default;
@@ -54,11 +49,10 @@ const thunk = require('redux-thunk').default;
 const i = require('../lib/initiate-state.js');
 
 router.get('/authorization/:authorization_uuid/form/create-account.html', [i.initiateState, i.initiateStateRouter, i.initiateStateSessionAccountFromSession, i.initiateStateAuthorizationFromParams], function (req, res, next) {
-  res.type('html');
-
   var store = Redux.createStore(require('../reducers'), req.initialState);
 
-  res.send(renderPage(require('../pages/authorization/CreateAccount.jsx'), store, req.app.services.router));
+  res.type('html');
+  res.send(renderPage(require('../components/entry/Default.jsx'), store, req.app.services.router));
 });
 
 router.get('/authorization/:authorization_uuid/message/:message_key.html', loadAuthorizationFromParams, function (req, res) {

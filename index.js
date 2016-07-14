@@ -29,24 +29,23 @@ async.parallel([
     routes: [
       {
         pattern: '/',
-        virtual: true
+        virtual: false
       },
       {
         pattern: '/authorize.html',
-        virtual: true
+        virtual: false
       },
       {
         pattern: '/authorization/:authorization_uuid/form/create-account.html',
-        virtual: true
+        virtual: false
       },
       {
         pattern: '/account/@me.html',
-        virtual: true
+        virtual: false
       },
-
       {
         pattern: '/lobby/:lobby_uuid.html',
-        virtual: true
+        virtual: false
       }
     ]
   });
@@ -75,7 +74,7 @@ async.parallel([
 
   app.use(require('./routes/home.js'));
   app.use(require('./routes/authorize.js'));
-  app.use(require('./routes/authorization.js'));
+  // app.use(require('./routes/authorization.js'));
   app.use(require('./routes/account.js'));
   app.use(require('./routes/session.js'));
   app.use(require('./routes/lobby.js'));

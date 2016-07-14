@@ -6,9 +6,9 @@ const walk = require('fs-walk'),
       fs = require('fs'),
       path = require('path');
 
-
+/*
 var entries = {};
-var entriesPath = path.join(__dirname, 'pages');
+var entriesPath = path.join(__dirname, 'components/page');
 
 walk.walkSync(entriesPath, function(basedir, filename, stat) {
   var absPath = path.join(basedir, filename);
@@ -19,10 +19,13 @@ walk.walkSync(entriesPath, function(basedir, filename, stat) {
     entries[parts.join('/')] = './lib/page-loader.js!' + absPath;
   }
 });
+*/
 
 
 module.exports = {
-  entry: entries,
+  entry: {
+    'entry/Default': './lib/entry-loader.js!./components/entry/Default.jsx'
+  },
   devtool: 'source-map',
   output: {
     path: __dirname + '/web',

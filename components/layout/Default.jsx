@@ -1,10 +1,10 @@
 const React = require('react');
 
-const LogOutButton = require('../containers/LogOutButton.jsx');
-const MainContent = require('../containers/block/MainContent.jsx');
+const LogOutButton = require('../../containers/LogOutButton.jsx');
+const MainContent = require('../../containers/block/MainContent.jsx');
 
 module.exports = React.createClass({
-  displayName: 'page/Default',
+  displayName: 'layout/Default',
 
   render: function() {
     return (
