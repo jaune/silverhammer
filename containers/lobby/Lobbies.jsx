@@ -1,10 +1,18 @@
-const CreateLobbyButton = require('./CreateLobbyButton.jsx');
-const Link = require('../lib/router/components/Link.jsx');
+const React = require('react');
+const ReactRedux = require('react-redux');
+
+const CreateLobbyButton = require('../CreateLobbyButton.jsx');
+const Link = require('../../lib/router/components/Link.jsx');
 
 function mapStateToProps (state, ownProps) {
-  var lobbies = state.session.account.lobbies.map(function (uuid) {
-    return state.collections.lobby[uuid];
-  });
+  var lobbies = [];
+
+  try {
+    lobbies = state.session.account.lobbies.map(function (uuid) {
+      return state.collections.lobby[uuid];
+    });
+  } catch (error) {
+  }
 
   return {
     lobbies: lobbies
@@ -24,7 +32,7 @@ const Lobbies = React.createClass({
     var content;
 
     var lobbies = this.props.lobbies.map(function (lobby) {
-      return <li><Link path={ '/lobby/' + lobby.uuid + '.html' }>Lobby@{this.props.lobbyUUID}</Link></li>
+      return <li key={lobby.uuid}><Link path={ '/lobby/' + lobby.uuid + '.html' }>Lobby@{lobby.uuid}</Link></li>
     });
 
     return (

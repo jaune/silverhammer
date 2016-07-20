@@ -61,10 +61,8 @@ function loadLobbyFromParams(req, res, next) {
 }
 
 
-router.use('/lobby', loadAccountFromSession);
-
 // Create lobby
-router.post('/lobby/', function (req, res, next) {
+router.post('/lobby/', [loadAccountFromSession], function (req, res, next) {
   res.type('json');
 
   var account = req.account;
@@ -72,7 +70,7 @@ router.post('/lobby/', function (req, res, next) {
   var query = {
     players: {
       $elemMatch: {
-        id: account.id
+        id: account._id
       }
     }
   };
@@ -125,6 +123,7 @@ router.get('/lobby/:lobby_uuid', loadLobbyFromParams, function (req, res, next) 
 // join lobby
 router.post('/lobby/:lobby_uuid/player/', loadLobbyFromParams, function (req, res, next) {
   res.type('json');
+  // TODO
 });
 
 module.exports = router;

@@ -19,6 +19,15 @@ module.exports = function (state, action) {
     case 'session/DELETE--FAILURE':
       // TODO
     break;
+
+
+    case 'lobby/CREATE--SUCCESS':
+      (function () {
+        var newState = Object.assign({}, state);
+        newState.account.lobbies.push(action.payload.uuid);
+        return newState;
+      })();
+    break;
   }
 
   return state;

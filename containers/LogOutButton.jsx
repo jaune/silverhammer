@@ -1,7 +1,7 @@
 const React = require('react');
 const ReactRedux = require('react-redux');
 
-const Lobbies = require('../lobby/Lobbies.jsx');
+const Lobbies = require('./lobby/Lobbies.jsx');
 const Link = require('../lib/router/components/Link.jsx');
 
 

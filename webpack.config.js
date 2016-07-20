@@ -2,11 +2,12 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 
+/*
+
 const walk = require('fs-walk'),
       fs = require('fs'),
       path = require('path');
 
-/*
 var entries = {};
 var entriesPath = path.join(__dirname, 'components/page');
 
@@ -19,6 +20,7 @@ walk.walkSync(entriesPath, function(basedir, filename, stat) {
     entries[parts.join('/')] = './lib/page-loader.js!' + absPath;
   }
 });
+
 */
 
 
