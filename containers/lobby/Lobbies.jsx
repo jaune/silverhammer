@@ -8,8 +8,10 @@ function mapStateToProps (state, ownProps) {
   var lobbies = [];
 
   try {
-    lobbies = state.session.account.lobbies.map(function (uuid) {
-      return state.collections.lobby[uuid];
+    state.session.account.lobbies.map(function (uuid) {
+      if (state.collections.lobby[uuid]) {
+        lobbies.push(state.collections.lobby[uuid]);
+      }
     });
   } catch (error) {
   }
