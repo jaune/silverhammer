@@ -1,3 +1,3 @@
 ## Overview
 
-![Overview](overview.svg?raw=true "Overview")
+![Overview](overview.png?raw=true "Overview")
