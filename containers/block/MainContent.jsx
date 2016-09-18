@@ -12,6 +12,9 @@ module.exports = React.createClass({
       case '/lobby/:lobby_uuid.html':
         Content = require('../lobby/Lobby.jsx');
         break;
+      case '/checkers/game/:game_uuid.html':
+        Content = require('../../games/checkers/components/MainContent.jsx');
+        break;
       case '/authorize.html':
         Content = require('../Passports.jsx');
         break;

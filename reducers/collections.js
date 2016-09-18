@@ -2,7 +2,8 @@ const Redux = require('redux');
 
 module.exports = Redux.combineReducers({
   lobby: lobbyReducer,
-  account: lobbyAccount
+  account: lobbyAccount,
+  passport: lobbyPassport
 });
 
 function lobbyReducer (state, action) {
@@ -35,6 +36,26 @@ function lobbyAccount (state, action) {
   }
 
   switch (action.type) {
+  }
+
+  return state;
+}
+
+function lobbyPassport (state, action) {
+  if (typeof state === 'undefined') {
+    return {};
+  }
+
+  switch (action.type) {
+    case 'fetcher/RECEIVE':
+      if (action.pattern === 'collections.passport.*') {
+        var state = Object.assign({}, state);
+
+        action.items.forEach(function (item) {
+          state[item.key] = item;
+        });
+      }
+      break;
   }
 
   return state;

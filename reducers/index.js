@@ -5,6 +5,5 @@ module.exports = Redux.combineReducers({
   i18n: require('./i18n.js'),
   session: require('./session.js'),
   router: require('../lib/router/reducer.js'),
-  collections: require('./collections.js'),
-  constants: require('./constants.js')
+  collections: require('./collections.js')
 });

@@ -37,6 +37,7 @@
     "redux-thunk": "^2.1.0",
     "sass-loader": "^3.2.1",
     "style-loader": "^0.13.1",
+    "three": "^0.81.0",
     "uuid": "^2.0.2",
     "winston": "^2.2.0"
   },

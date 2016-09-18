@@ -33,7 +33,7 @@ async.parallel([
       },
       {
         pattern: '/authorize.html',
-        virtual: false
+        virtual: true
       },
       {
         pattern: '/authorization/:authorization_uuid/form/create-account.html',
@@ -45,6 +45,10 @@ async.parallel([
       },
       {
         pattern: '/lobby/:lobby_uuid.html',
+        virtual: false
+      },
+      {
+        pattern: '/checkers/game/:game_uuid.html',
         virtual: false
       }
     ]
@@ -78,6 +82,8 @@ async.parallel([
   app.use(require('./routes/account.js'));
   app.use(require('./routes/session.js'));
   app.use(require('./routes/lobby.js'));
+
+  app.use(require('./games/checkers/route.js'));
 
   // End
   app.use(function(error, req, res, next) {

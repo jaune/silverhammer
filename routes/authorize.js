@@ -4,6 +4,12 @@ const uuidv4 = require('uuid').v4;
 const renderPage = require('../lib/entry-renderer.js');
 const renderRedirectPage = require('../lib/redirect-page-renderer.js');
 const Redux = require('redux');
+const createFetcher = require('../lib/fetcher/createFetcher.js');
+
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+
+const async = require('async');
 
 var router = express.Router();
 
@@ -17,12 +23,78 @@ var passport = require('passport');
 const i = require('../lib/initiate-state.js');
 
 
+router.get('/passport/', function (req, res) {
+  var passports = ['steam', 'twitchtv', 'bnet', 'discord'].map(function (key) {
+    return {
+      key: key,
+      url: process.env.PUBLIC_BASE_URL + '/authorize/' + key
+    };
+  });
 
-router.get('/authorize.html', [i.initiateState, i.initiateStateRouter, i.initiateStateSessionAccountFromSession, i.initiateStateConstantsPassports], function (req, res) {
-  const store = Redux.createStore(require('../reducers'), req.initialState);
+  res.json(passports);
+});
 
-  res.type('html');
-  res.send(renderPage(require('../components/entry/Default.jsx'), store, req.app.services.router));
+
+router.get('/authorize.html', [i.initiateState, i.initiateStateRouter, i.initiateStateSessionAccountFromSession], function (req, res, next) {
+  var store = Redux.createStore(require('../reducers'), req.initialState);
+  var fetcher = createFetcher();
+
+  fetcher.startRecord();
+
+  var content = ReactDOMServer.renderToString(React.createElement(require('../components/entry/Default.jsx'), { store: store, router: req.app.services.router, fetcher: fetcher }));
+
+  var record = fetcher.stopRecord();
+
+  record = record.reduce(function (result, value) {
+    if (Array.isArray(value)) {
+      return result.concat(value);
+    }
+    result.push(value);
+
+    return result;
+  }, []);
+
+  async.eachLimit(
+    record, 10,
+    function loop (pattern, done) {
+
+      switch (pattern) {
+        case 'collections.passport.*':
+          (function () {
+            var passports = ['steam', 'twitchtv', 'bnet', 'discord'].map(function (key) {
+              return {
+                key: key,
+                url: process.env.PUBLIC_BASE_URL + '/authorize/' + key
+              };
+            });
+
+            store.dispatch({
+              type: 'fetcher/RECEIVE',
+              pattern: 'collections.passport.*',
+              items: passports
+            });
+            return done();
+          })();
+          return;
+        break;
+      }
+      return done();
+    },
+    function done (error) {
+      if (error) {
+        return next(error);
+      }
+
+      content = ReactDOMServer.renderToString(React.createElement(require('../components/entry/Default.jsx'), { store: store, router: req.app.services.router, fetcher: fetcher }));
+
+      res.type('html');
+      res.send(renderPage(require('../components/entry/Default.jsx'), store, req.app.services.router, content));
+      return next();
+    }
+  );
+
+
+
 });
 
 
