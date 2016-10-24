@@ -1,21 +1,19 @@
 # SilverHammer
 
+### Build
+
+```sh
+$> npm run webpack
+```
+
 ### Develop
 
 ```sh
-$> .\node_modules\.bin\webpack -w
-$> node .
-```
-```sh
-$> ./node_modules/.bin/webpack -w
-$> node .
+$> npm run webpack -- -w
 ```
 
-### eslint
+### Lint
 
 ```sh
-$> .\node_modules\.bin\eslint */*.js */*.jsx
-```
-```sh
-$> .\node_modules\.bin\eslint */*.js */*.jsx
+$> npm run eslint
 ```
